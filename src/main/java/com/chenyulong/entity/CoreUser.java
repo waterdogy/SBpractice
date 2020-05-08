@@ -21,7 +21,6 @@ public class CoreUser implements java.io.Serializable{
 
     // 登录名，编号
     @NotBlank(message = "用户编号不能为空")
-    @Null(message = "用户编号不能为空")
     private String code;
 
     // 用户姓名

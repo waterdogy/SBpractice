@@ -4,12 +4,16 @@ import com.chenyulong.entity.CoreUser;
 import com.chenyulong.entity.Demo;
 import com.chenyulong.entity.Properties;
 import com.chenyulong.service.CoreUserService;
+import com.chenyulong.util.CodeMsg;
 import com.chenyulong.util.ResultMsg;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -79,6 +83,19 @@ public class HelloController {
         coreUserService.insertUser(coreUser);
         return ResultMsg.success("success");
     }
+
+    @PostMapping(value = "/valid")
+    public ResultMsg<String> valid(@RequestBody @Valid CoreUser coreUser, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            List<ObjectError> list = bindingResult.getAllErrors();
+            for(ObjectError  error:list){
+                System.out.println(error.getCode()+"---"+error.getArguments()+"---"+error.getDefaultMessage());
+            }
+            return ResultMsg.error(CodeMsg.SERVER_ERROR);
+        }
+        return ResultMsg.success("success");
+    }
+
 
 
 }

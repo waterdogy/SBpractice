@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.chenyulong.entity.CoreUser;
 import com.chenyulong.service.CoreUserService;
 import com.chenyulong.starter;
+import com.chenyulong.util.CodeMsg;
+import com.chenyulong.util.ResultMsg;
 import com.chenyulong.web.HelloController;
 
 
@@ -86,5 +88,28 @@ public class HelloControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
                 .andExpect(content().string("101"));
+    }
+
+    @Test
+    public void testValid() throws Exception {
+        CoreUser coreUser = new CoreUser();
+        long id = 0;
+        coreUser.setId(id);
+        coreUser.setCode("202");
+        coreUser.setName("Hello");
+        CoreUser wrongCoreUser = new CoreUser();
+        String userJson = JSON.toJSONString(coreUser);
+        String userJsonWrong = JSON.toJSONString(wrongCoreUser);
+        ResultMsg successMsg = ResultMsg.success("success");
+        ResultMsg errorMsg = ResultMsg.error(CodeMsg.SERVER_ERROR);
+
+        mockMvc.perform(post("/valid")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJson)).andExpect(content().json(JSON.toJSONString(successMsg)));
+
+        mockMvc.perform(post("/valid")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userJsonWrong)).andExpect(content().json(JSON.toJSONString(errorMsg)));
+
     }
 }
